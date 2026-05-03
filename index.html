@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashFlowAI - Never Run Out of Cash Again</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+        }
+        
+        /* Animated gradient background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #3B82F6, #10B981, #F59E0B, #EC4899);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating animation */
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Pulse animation */
+        .pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Slide up animation */
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5),
+                        0 0 40px rgba(16, 185, 129, 0.3),
+                        0 0 60px rgba(245, 158, 11, 0.2);
+            animation: glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.5),
+                            0 0 40px rgba(16, 185, 129, 0.3),
+                            0 0 60px rgba(245, 158, 11, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.7),
+                            0 0 60px rgba(16, 185, 129, 0.5),
+                            0 0 90px rgba(245, 158, 11, 0.4);
+            }
+        }
+        
+        /* Hover lift effect */
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        /* Particle effect background */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: rise 15s infinite ease-in;
+        }
+        
+        @keyframes rise {
+            0% {
+                bottom: -100px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 100%;
+                opacity: 0;
+            }
+        }
+        
+        /* Success popup */
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .success-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+        
+        .overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Overlay for popup -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Success Popup -->
+    <div class="success-popup bg-white rounded-3xl p-8 shadow-2xl max-w-md" id="successPopup">
+        <div class="text-center">
+            <div class="text-6xl mb-4">🎉</div>
+            <h3 class="text-3xl font-bold text-gray-900 mb-4">You're On The List!</h3>
+            <p class="text-gray-600 mb-6">We'll email you as soon as CashFlowAI launches. Get ready to take control of your cash flow!</p>
+            <button onclick="closePopup()" class="bg-gradient-to-r from-blue-600 to-green-600 text-white font-bold py-3 px-8 rounded-lg hover:shadow-xl transition">
+                Awesome!
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section with Animated Background -->
+    <header class="gradient-bg text-white py-20 px-6 relative overflow-hidden">
+        <!-- Floating particles -->
+        <div class="particles">
+            <div class="particle" style="width: 10px; height: 10px; left: 10%; animation-delay: 0s;"></div>
+            <div class="particle" style="width: 15px; height: 15px; left: 25%; animation-delay: 2s;"></div>
+            <div class="particle" style="width: 8px; height: 8px; left: 40%; animation-delay: 4s;"></div>
+            <div class="particle" style="width: 12px; height: 12px; left: 55%; animation-delay: 1s;"></div>
+            <div class="particle" style="width: 10px; height: 10px; left: 70%; animation-delay: 3s;"></div>
+            <div class="particle" style="width: 14px; height: 14px; left: 85%; animation-delay: 5s;"></div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <!-- Logo with glow effect -->
+            <div class="mb-8 flex justify-center float">
+                <div class="bg-white rounded-3xl p-5 shadow-2xl glow">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3B82F6"/>
+                                <stop offset="50%" style="stop-color:#10B981"/>
+                                <stop offset="100%" style="stop-color:#F59E0B"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" rx="20" fill="url(#logoGrad)"/>
+                        <rect x="25" y="55" width="15" height="30" rx="2.5" fill="white" opacity="0.7"/>
+                        <rect x="42.5" y="42.5" width="15" height="42.5" rx="2.5" fill="white" opacity="0.85"/>
+                        <rect x="60" y="27.5" width="15" height="57.5" rx="2.5" fill="white"/>
+                        <path d="M 30 65 L 42.5 52.5 L 60 37.5 L 72 27" stroke="#FDE047" stroke-width="3" stroke-linecap="round" fill="none"/>
+                        <circle cx="72" cy="27" r="4" fill="#FDE047"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight slide-up" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                Never Run Out of<br>Cash Again
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-95 max-w-3xl mx-auto slide-up" style="animation-delay: 0.2s;">
+                AI-powered 13-week cash flow forecasting that predicts shortages before they happen
+            </p>
+            
+            <!-- Email Signup with enhanced styling -->
+            <div class="bg-white rounded-3xl p-8 max-w-md mx-auto shadow-2xl hover-lift slide-up" style="animation-delay: 0.4s;">
+                <h3 class="text-gray-900 font-bold text-xl mb-2">🚀 Join the Waitlist</h3>
+                <p class="text-gray-600 text-sm mb-4">Be first to know when we launch</p>
+                <form id="waitlistForm" class="space-y-4">
+                    <input 
+                        type="text" 
+                        id="fullName"
+                        placeholder="Full Name" 
+                        class="w-full px-5 py-4 rounded-xl border-2 border-gray-300 text-gray-900 focus:border-blue-500 focus:outline-none transition text-lg"
+                        required
+                    >
+                    <input 
+                        type="email" 
+                        id="email"
+                        placeholder="Work Email" 
+                        class="w-full px-5 py-4 rounded-xl border-2 border-gray-300 text-gray-900 focus:border-blue-500 focus:outline-none transition text-lg"
+                        required
+                    >
+                    <select 
+                        id="businessType"
+                        class="w-full px-5 py-4 rounded-xl border-2 border-gray-300 text-gray-900 focus:border-blue-500 focus:outline-none transition text-lg"
+                        required
+                    >
+                        <option value="">What type of business?</option>
+                        <option value="ecommerce">E-commerce / Online Store</option>
+                        <option value="agency">Agency / Consulting</option>
+                        <option value="retail">Retail / Physical Store</option>
+                        <option value="restaurant">Restaurant / Food Service</option>
+                        <option value="contractor">Contractor / Trades</option>
+                        <option value="freelancer">Freelancer / Solopreneur</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <button 
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold py-4 px-6 rounded-xl hover:shadow-2xl transition transform hover:scale-105 text-lg"
+                    >
+                        Get Early Access →
+                    </button>
+                </form>
+                <div class="flex items-center justify-center mt-4 space-x-2">
+                    <div class="flex -space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600"></div>
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-green-600"></div>
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600"></div>
+                    </div>
+                    <p class="text-gray-600 text-sm font-semibold">500+ businesses waiting</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Problem Section with animated cards -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4">
+                Sound Familiar?
+            </h2>
+            <p class="text-xl text-center text-gray-600 mb-12">These problems keep business owners up at night</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-red-50 to-red-100 border-l-4 border-red-500 p-8 rounded-2xl hover-lift shadow-lg">
+                    <div class="text-5xl mb-4 float">😰</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">Payroll Panic</h3>
+                    <p class="text-gray-700 text-lg">"Will I have enough to pay my team next month?"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-red-50 to-red-100 border-l-4 border-red-500 p-8 rounded-2xl hover-lift shadow-lg" style="animation-delay: 0.1s;">
+                    <div class="text-5xl mb-4 float" style="animation-delay: 1s;">😵</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">Surprise Shortages</h3>
+                    <p class="text-gray-700 text-lg">"Where did all my money go? I had $10K last week!"</p>
+                </div>
+                
+                <div class="bg-gradient-to-br from-red-50 to-red-100 border-l-4 border-red-500 p-8 rounded-2xl hover-lift shadow-lg" style="animation-delay: 0.2s;">
+                    <div class="text-5xl mb-4 float" style="animation-delay: 2s;">📊</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">Spreadsheet Hell</h3>
+                    <p class="text-gray-700 text-lg">"I hate tracking this manually. It takes hours!"</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12 bg-gradient-to-r from-yellow-100 to-orange-100 border-4 border-yellow-400 rounded-2xl p-8 max-w-3xl mx-auto shadow-xl hover-lift">
+                <p class="text-3xl md:text-4xl font-black text-gray-900">
+                    82% of small businesses fail
+                </p>
+                <p class="text-xl md:text-2xl text-gray-700 mt-2 font-semibold">due to cash flow problems</p>
+                <p class="text-lg text-gray-600 mt-3">Don't be a statistic. Get CashFlowAI.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section with gradient -->
+    <section class="py-20 px-6 bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4">
+                Meet CashFlowAI ✨
+            </h2>
+            <p class="text-xl text-center text-gray-700 mb-12 max-w-2xl mx-auto">
+                The smart way to predict and prevent cash flow problems
+            </p>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4 bg-white p-6 rounded-2xl shadow-lg hover-lift">
+                            <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-4 flex-shrink-0">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">13-Week Cash Forecast</h3>
+                                <p class="text-gray-700">AI analyzes your spending patterns and predicts exactly when you'll run low on cash</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 bg-white p-6 rounded-2xl shadow-lg hover-lift">
+                            <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl p-4 flex-shrink-0">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">Smart Alerts</h3>
+                                <p class="text-gray-700">Get warned 2-3 weeks before a cash shortage so you can take action</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4 bg-white p-6 rounded-2xl shadow-lg hover-lift">
+                            <div class="bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl p-4 flex-shrink-0">
+                                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-xl text-gray-900 mb-2">60-Second Setup</h3>
+                                <p class="text-gray-700">No complicated spreadsheets. Get your forecast in under a minute.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-2xl p-10 hover-lift glow">
+                    <div class="text-center mb-8">
+                        <div class="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                            LIMITED TIME OFFER
+                        </div>
+                        <div class="text-6xl font-black bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                            $29
+                        </div>
+                        <div class="text-gray-600 text-lg">/month</div>
+                        <div class="text-sm text-gray-500 mt-2">First 100 users get 50% off forever!</div>
+                    </div>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center text-gray-700 text-lg">
+                            <span class="text-green-500 mr-3 text-2xl">✓</span>
+                            Unlimited forecasts
+                        </li>
+                        <li class="flex items-center text-gray-700 text-lg">
+                            <span class="text-green-500 mr-3 text-2xl">✓</span>
+                            Auto bank sync
+                        </li>
+                        <li class="flex items-center text-gray-700 text-lg">
+                            <span class="text-green-500 mr-3 text-2xl">✓</span>
+                            Weekly alerts
+                        </li>
+                        <li class="flex items-center text-gray-700 text-lg">
+                            <span class="text-green-500 mr-3 text-2xl">✓</span>
+                            Multiple businesses
+                        </li>
+                        <li class="flex items-center text-gray-700 text-lg">
+                            <span class="text-green-500 mr-3 text-2xl">✓</span>
+                            Cancel anytime
+                        </li>
+                    </ul>
+                    <button onclick="scrollToTop()" class="w-full bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold py-5 px-6 rounded-2xl hover:shadow-2xl transition transform hover:scale-105 text-lg">
+                        Join Waitlist Now →
+                    </button>
+                    <p class="text-center text-sm text-gray-600 mt-4 font-semibold">
+                        ⚡ 14-day free trial • No credit card required
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Who CashFlowAI Is Perfect For</h2>
+            <p class="text-xl text-gray-600 mb-12">Join hundreds of smart business owners</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl hover-lift shadow-lg">
+                    <div class="text-6xl mb-4 float">🛍️</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">E-commerce</h3>
+                    <p class="text-gray-600 text-lg">Shopify stores, Amazon sellers, online retailers</p>
+                </div>
+                
+                <div class="p-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl hover-lift shadow-lg">
+                    <div class="text-6xl mb-4 float" style="animation-delay: 1s;">💼</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">Service Businesses</h3>
+                    <p class="text-gray-600 text-lg">Agencies, consultants, contractors, freelancers</p>
+                </div>
+                
+                <div class="p-8 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl hover-lift shadow-lg">
+                    <div class="text-6xl mb-4 float" style="animation-delay: 2s;">🏪</div>
+                    <h3 class="font-bold text-2xl text-gray-900 mb-3">Local Businesses</h3>
+                    <p class="text-gray-600 text-lg">Restaurants, retail shops, salons, gyms</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-24 px-6 gradient-bg text-white relative overflow-hidden">
+        <div class="particles">
+            <div class="particle" style="width: 12px; height: 12px; left: 15%; animation-delay: 0s;"></div>
+            <div class="particle" style="width: 10px; height: 10px; left: 35%; animation-delay: 3s;"></div>
+            <div class="particle" style="width: 14px; height: 14px; left: 55%; animation-delay: 1s;"></div>
+            <div class="particle" style="width: 11px; height: 11px; left: 75%; animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-5xl md:text-6xl font-black mb-6 leading-tight" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                Stop Worrying About Cash Flow
+            </h2>
+            <p class="text-2xl mb-10 opacity-95">
+                Join 500+ smart business owners getting early access
+            </p>
+            
+            <div class="bg-white rounded-3xl p-10 max-w-md mx-auto shadow-2xl glow">
+                <form id="footerForm" class="space-y-5">
+                    <input 
+                        type="text" 
+                        id="footerName"
+                        placeholder="Full Name" 
+                        class="w-full px-5 py-4 rounded-xl border-2 border-gray-300 text-gray-900 focus:border-blue-500 focus:outline-none text-lg"
+                        required
+                    >
+                    <input 
+                        type="email" 
+                        id="footerEmail"
+                        placeholder="Work Email" 
+                        class="w-full px-5 py-4 rounded-xl border-2 border-gray-300 text-gray-900 focus:border-blue-500 focus:outline-none text-lg"
+                        required
+                    >
+                    <button 
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-blue-600 via-green-600 to-yellow-500 text-white font-bold py-4 px-6 rounded-xl hover:shadow-2xl transition transform hover:scale-105 text-lg"
+                    >
+                        Get Early Access →
+                    </button>
+                </form>
+                <p class="text-gray-600 text-sm mt-4">🔒 Your email is safe with us. Unsubscribe anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="mb-6">
+                <h3 class="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-green-400 bg-clip-text text-transparent">CashFlowAI</h3>
+                <p class="text-gray-400 text-lg">Smart Cash Forecasting for Businesses</p>
+            </div>
+            
+            <div class="flex justify-center space-x-8 mb-6 text-lg">
+                <a href="#" class="text-gray-400 hover:text-white transition">Privacy</a>
+                <a href="#" class="text-gray-400 hover:text-white transition">Terms</a>
+                <a href="mailto:cashflowaif@gmail.com" class="text-gray-400 hover:text-white transition">Contact</a>
+            </div>
+            
+            <p class="text-gray-500">
+                © 2026 CashFlowAI. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                document.getElementById('email').focus();
+            }, 500);
+        }
+        
+        // Close popup function
+        function closePopup() {
+            document.getElementById('successPopup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+        
+        // Show success popup
+        function showSuccess() {
+            document.getElementById('successPopup').classList.add('show');
+            document.getElementById('overlay').classList.add('show');
+        }
+        
+        // Handle waitlist form submission
+        async function handleFormSubmit(name, email, businessType, formId) {
+            try {
+                // Your Google Sheets URL
+                const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyhEYWVnligqaPBQcZBVBj5HAexUwa5X2iDCZZgCzSwb_Kq-_PJmYbyGJ4R3QPu80vs/exec';
+                
+                const response = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        businessType: businessType,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                // Show success
+                document.getElementById(formId).reset();
+                showSuccess();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Something went wrong. Please try again!');
+            }
+        }
+        
+        // Waitlist form (hero section)
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const businessType = document.getElementById('businessType').value;
+            handleFormSubmit(name, email, businessType, 'waitlistForm');
+        });
+        
+        // Footer form
+        document.getElementById('footerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('footerName').value;
+            const email = document.getElementById('footerEmail').value;
+            handleFormSubmit(name, email, 'N/A', 'footerForm');
+        });
+        
+        // Close popup when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closePopup);
+        
+        // Escape key closes popup
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>
