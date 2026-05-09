@@ -193,9 +193,9 @@
     </div>
 
     <script>
-        // Initialize Supabase
-        const supabaseUrl = 'https://ijgfdeiqgfgtsdxhjtq.supabase.co';
-        const supabaseKey = 'sb_publishable_eqIjz2pzfZmvWTk8Gif5XA_zAgNnSv9';
+        // ✅ CORRECTED Supabase credentials
+        const supabaseUrl = 'https://ijlgfdeiqqfgtsdxhjtq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqbGdmZGVpcXFmZ3RzZHhoanRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTk5ODYsImV4cCI6MjA5MzM5NTk4Nn0.0gAAU2x1znJqLuLAbNAT2XMPjjOe5iAPymf8RGhuXwg';
         const { createClient } = supabase;
         const supabaseClient = createClient(supabaseUrl, supabaseKey);
         
@@ -280,7 +280,6 @@
             const password = document.getElementById('signupPassword').value;
             const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
             
-            // Check if passwords match
             if (password !== passwordConfirm) {
                 showMessage('Passwords do not match!', true);
                 return;
@@ -309,7 +308,6 @@
                 
                 showMessage('Success! Check your email (' + email + ') to confirm your account.');
                 
-                // Clear form
                 document.getElementById('signupName').value = '';
                 document.getElementById('signupEmail').value = '';
                 document.getElementById('signupPassword').value = '';
